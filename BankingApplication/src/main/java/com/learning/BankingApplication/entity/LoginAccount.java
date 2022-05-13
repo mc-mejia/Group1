@@ -5,6 +5,8 @@ package com.learning.BankingApplication.entity;
 
 import java.util.Date;
 
+import javax.persistence.Entity;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +18,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 public class LoginAccount {
 	private Long accountNumber; //primary key for db
 	private String accountType;
