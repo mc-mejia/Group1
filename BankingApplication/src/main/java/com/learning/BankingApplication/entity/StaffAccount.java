@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @Entity
 public class StaffAccount extends LoginAccount{
 	
-	private long staffId;
-	private String staffName; 
-	private String staffStatus; 
+	//private long staffId; //I think this is done by LoginAccount
+	private String staffName;
+	//private String staffStatus; //I think this is done by LoginAccount
 	
 }

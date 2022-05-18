@@ -14,6 +14,7 @@ import com.learning.BankingApplication.entity.Beneficiary;
 import com.learning.BankingApplication.entity.CustomerAccount;
 import com.learning.BankingApplication.entity.StaffAccount;
 import com.learning.BankingApplication.entity.Transaction;
+import com.learning.BankingApplication.exceptions.InsufficientBalanceException;
 import com.learning.BankingApplication.repository.BankAccountRepository;
 import com.learning.BankingApplication.repository.BeneficiaryRepository;
 import com.learning.BankingApplication.repository.CustomerRepository;
@@ -166,16 +167,22 @@ public class CustomerServiceImpl implements CustomerService{
 	}
 
 	@Override
-	public boolean transferByStaff(Transaction transaction) {
+	public boolean transferByStaff(Transaction transaction) throws EntityNotFoundException, InsufficientBalanceException {
+		BankAccount fromAccount;
+		BankAccount toAccount;
 		//check if accounts exist
-		
+		fromAccount = bankAccountRepository.getById(transaction.getSenderId());
+		toAccount = bankAccountRepository.getById(transaction.getBeneficiaryId());
 		//check if there is enough money to transfer
-		
+		if(transaction.getTransactionAmount() > fromAccount.getBalance())
+			throw new InsufficientBalanceException("Insufficient balance to transfer");
 		//update BankAccount balances appropriately (using repo calls)
-		
+		fromAccount.setBalance(fromAccount.getBalance()-transaction.getTransactionAmount());
+		toAccount.setBalance(fromAccount.getBalance()+transaction.getTransactionAmount());
+		bankAccountRepository.save(fromAccount);
+		bankAccountRepository.save(toAccount);
 		//call repo method to add the transaction
 		createTransaction(transaction);
-		//add exception handling
 
 		return true;
 	}
@@ -208,24 +215,23 @@ public class CustomerServiceImpl implements CustomerService{
 	//==========
 	@Override
 	public StaffAccount registerStaffAccount(StaffAccount staffAccount) {
-		//TODO add date of creation before saving
-		
+		staffAccount.setStatus("Disable");
+		LocalDate localDate = LocalDateTime.now().toLocalDate();
+		staffAccount.setDoc(java.sql.Date.valueOf(localDate));
 		return staffRepository.save(staffAccount);
 	}
 
 	@Override
 	public List<StaffAccount> getAllStaff() {
-		// TODO Auto-generated method stub
-		return null;
+		return staffRepository.findAll();
 	}
 
 	@Override
-	public boolean toggleStaff(long staffId, String newStatus) {
+	public boolean toggleStaff(long staffId, String newStatus) throws EntityNotFoundException{
 		StaffAccount staffAccount = staffRepository.getById(staffId);
 		staffAccount.setStatus(newStatus);
 		staffRepository.save(staffAccount);
 		return true;
-		//TODO: staffId not found exception
 	}
 	
 }

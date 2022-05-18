@@ -2,11 +2,14 @@ package com.learning.BankingApplication.contracts;
 
 import java.util.List;
 
+import javax.persistence.EntityNotFoundException;
+
 import com.learning.BankingApplication.entity.BankAccount;
 import com.learning.BankingApplication.entity.Beneficiary;
 import com.learning.BankingApplication.entity.CustomerAccount;
 import com.learning.BankingApplication.entity.StaffAccount;
 import com.learning.BankingApplication.entity.Transaction;
+import com.learning.BankingApplication.exceptions.InsufficientBalanceException;
 
 public interface CustomerService {
 	/*Customer Handling*/
@@ -34,7 +37,7 @@ public interface CustomerService {
 	
 	/*Transaction Handling*/
 	boolean transferByCustomer(Transaction transaction);
-	boolean transferByStaff(Transaction transaction);
+	boolean transferByStaff(Transaction transaction) throws EntityNotFoundException, InsufficientBalanceException;
 	
 	/*Authentication Handling*/
 	//authenticate goes here (for both customer and staff and admin?)
