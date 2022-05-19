@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 
 public class Beneficiary {
 	
-	private long beneficiariesId;
+	private long beneficiaryId;
 	private long accoutnNo;
 	private boolean approval;
 	private Date dateOfApproval;
