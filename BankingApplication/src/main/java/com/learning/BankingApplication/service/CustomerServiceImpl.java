@@ -56,14 +56,15 @@ public class CustomerServiceImpl implements CustomerService{
 
 	@Override
 	public List<CustomerAccount> getAllCustomerAccounts() {
-		// TODO Auto-generated method stub
-		return null;
+		return customerRepository.findAll();
 	}
 
 	@Override
 	public boolean toggleCustomer(long customerId, String newStatus) {
+		//toggling only possible if account already exists, assume no misuse
 		CustomerAccount currentCustomer = customerRepository.getById(customerId);
 		currentCustomer.setApproved(newStatus);
+		customerRepository.save(currentCustomer);
 		return false;
 	}
 
@@ -81,31 +82,37 @@ public class CustomerServiceImpl implements CustomerService{
 
 	@Override
 	public BankAccount approveBankAccount(BankAccount bankAccount, long urlAccountNumber) {
-		// TODO Auto-generated method stub
+		BankAccount currentBankAccount = bankAccountRepository.getById(urlAccountNumber);
+		currentBankAccount.setApprove("APPROVED");
+		bankAccountRepository.save(currentBankAccount);
 		return null;
 	}
 
 	@Override
 	public List<BankAccount> getAllBankAccountsById(long customerId) {
-		// TODO Auto-generated method stub
-		return null;
+		CustomerAccount currentCustomer = customerRepository.getById(customerId);
+		
+		return currentCustomer.getAccounts();
 	}
 
 	@Override
 	public BankAccount getBankAccountById(long customerId, long accountId) {
-		// TODO Auto-generated method stub
-		return null;
+		BankAccount currentBankAccount = bankAccountRepository.getById(accountId);
+		return currentBankAccount;
 	}
 
 	@Override
 	public List<BankAccount> getUnapprovedBankAccounts() {
+		//TODO
 		return null;
 	}
 
 	@Override
 	public List<BankAccount> approveBankAccounts(List<BankAccount> accList) {
-		// TODO Auto-generated method stub
-		return null;
+		for (BankAccount ba: accList) {
+			ba = approveBankAccount(ba, ba.getAccountId());
+		}
+		return accList;
 	}
 
 	
@@ -115,7 +122,6 @@ public class CustomerServiceImpl implements CustomerService{
 	
 	@Override
 	public boolean addBeneficiary(long customerId, Beneficiary beneficiary) {
-		//TODO might have to verify customId is correct or something
 		beneficiaryRepository.save(beneficiary);
 		return true;
 	}
