@@ -32,17 +32,16 @@ public interface CustomerService {
 	boolean addBeneficiary(long customerId, Beneficiary beneficiary);
 	List<Beneficiary> getAllBeneficiariesByCustomerId(long customerId);
 	boolean deleteBeneficiaryById(long customerId, long beneficiaryId);
-	boolean getUnapprovedBeneficiaries(long beneficiaryId);
+	List<Beneficiary> getUnapprovedBeneficiaries();
 	boolean approveBeneficiary(Beneficiary beneficiary);
 	
 	/*Transaction Handling*/
-	boolean transferByCustomer(Transaction transaction);
-	boolean transferByStaff(Transaction transaction) throws EntityNotFoundException, InsufficientBalanceException;
+	boolean transfer(Transaction transaction) throws EntityNotFoundException, InsufficientBalanceException;
 	
 	/*Authentication Handling*/
 	//authenticate goes here (for both customer and staff and admin?)
-	boolean questionVerification(String answer);//Not sure about this
-	boolean updatePassword(String urlUsername, String payloadUsername, String password);
+	boolean questionVerification(String username, String answer);//Not sure about this
+	boolean updatePassword(String username, String password);
 	
 	/*Staff Handling*/
 	StaffAccount registerStaffAccount(StaffAccount staffAccount);

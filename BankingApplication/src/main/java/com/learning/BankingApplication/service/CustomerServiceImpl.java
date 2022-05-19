@@ -3,6 +3,7 @@ package com.learning.BankingApplication.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -45,12 +46,12 @@ public class CustomerServiceImpl implements CustomerService{
 
 	@Override
 	public CustomerAccount getCustomerAccountById(long customerId) throws EntityNotFoundException{
+
 		return customerRepository.getById(customerId);
 	}
 
 	@Override
 	public CustomerAccount updateCustomerAccount(CustomerAccount customerAccount) {
-		// TODO Auto-generated method stub
 		return customerRepository.save(customerAccount);
 	}
 
@@ -83,7 +84,7 @@ public class CustomerServiceImpl implements CustomerService{
 	@Override
 	public BankAccount approveBankAccount(BankAccount bankAccount, long urlAccountNumber) {
 		BankAccount currentBankAccount = bankAccountRepository.getById(urlAccountNumber);
-		currentBankAccount.setApprove("APPROVED");
+		currentBankAccount.setApprove(true);
 		bankAccountRepository.save(currentBankAccount);
 		return currentBankAccount;
 	}
@@ -97,14 +98,12 @@ public class CustomerServiceImpl implements CustomerService{
 
 	@Override
 	public BankAccount getBankAccountById(long customerId, long accountId) {
-		BankAccount currentBankAccount = bankAccountRepository.getById(accountId);
-		return currentBankAccount;
+		return bankAccountRepository.getById(accountId);
 	}
 
 	@Override
 	public List<BankAccount> getUnapprovedBankAccounts() {
-		//TODO
-		return null;
+		return bankAccountRepository.findAll().stream().filter(c-> !c.isApprove()).collect(Collectors.toList());
 	}
 
 	@Override
@@ -129,37 +128,30 @@ public class CustomerServiceImpl implements CustomerService{
 
 	@Override
 	public List<Beneficiary> getAllBeneficiariesByCustomerId(long customerId) {
-		// TODO Auto-generated method stub
 
 		CustomerAccount currentCustomer = customerRepository.getById(customerId);
-
-		return null;
+		return currentCustomer.getBeneficiaries();
 	}
 
 	@Override
 	public boolean deleteBeneficiaryById(long customerId, long beneficiaryId) {
-		// TODO Auto-generated method stub		
-		
+
 		beneficiaryRepository.deleteById(beneficiaryId);
-		return false;
+		return true;
 		
 	}
 
 	@Override
-	public boolean getUnapprovedBeneficiaries(long beneficiaryId) {
-		// TODO Auto-generated method stub
-		beneficiaryRepository.findById(beneficiaryId);
-		
-		
-		return false;
+	public List<Beneficiary> getUnapprovedBeneficiaries() {
+
+		return beneficiaryRepository.findAll().stream().filter(c-> !c.isApproval()).collect(Collectors.toList());
+
 	}
 
 	@Override
 	public boolean approveBeneficiary(Beneficiary beneficiary) {
-		// TODO Auto-generated method stub
-		beneficiaryRepository.findAll();
-		
-		
+		beneficiary.setApproval(true);
+		beneficiaryRepository.save(beneficiary);
 		return true;
 	}
 
@@ -168,26 +160,10 @@ public class CustomerServiceImpl implements CustomerService{
 	//Transfers/Transactions
 	//==========
 	
-	@Override
-	public boolean transferByCustomer(Transaction transaction) {
-		//TODO Actually move the money between the bank accounts, maybe in helper method
-		
-		//check if accounts exist
-		
-		//check if accounts are beneficiaries
-		
-		//check if there is enough money to transfer
-		
-		//update BankAccount balances appropriately (using repo calls)
-		
-		//call repo method to add the transaction
-		createTransaction(transaction);
-		//add exception handling
-		return true;
-	}
+
 
 	@Override
-	public boolean transferByStaff(Transaction transaction) throws EntityNotFoundException, InsufficientBalanceException {
+	public boolean transfer(Transaction transaction) throws EntityNotFoundException, InsufficientBalanceException {
 		BankAccount fromAccount;
 		BankAccount toAccount;
 		//check if accounts exist
@@ -201,14 +177,8 @@ public class CustomerServiceImpl implements CustomerService{
 		toAccount.setBalance(fromAccount.getBalance()+transaction.getTransactionAmount());
 		bankAccountRepository.save(fromAccount);
 		bankAccountRepository.save(toAccount);
-		//call repo method to add the transaction
-		createTransaction(transaction);
-
-		return true;
-	}
-	
-	private boolean createTransaction(Transaction transaction) {
 		transactionRepository.save(transaction);
+		//call repo method to add the transaction
 		return true;
 	}
 
@@ -216,17 +186,23 @@ public class CustomerServiceImpl implements CustomerService{
 	//==========
 	//Verification
 	//==========
-	
+
+
+
 	@Override
-	public boolean questionVerification(String answer) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean questionVerification(String username,String answer) {
+
+		CustomerAccount currentCustomer = customerRepository.getById(customerRepository.getIdbyUsername(username));
+		return currentCustomer.getSecurityAnswer().equals(answer);
 	}
 
 	@Override
-	public boolean updatePassword(String urlUsername, String payloadUsername, String password) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean updatePassword( String username, String password) {
+
+		CustomerAccount currentCustomer = customerRepository.getById(customerRepository.getIdbyUsername(username));
+		currentCustomer.setPassword(password);
+		customerRepository.save(currentCustomer);
+		return true;
 	}
 
 

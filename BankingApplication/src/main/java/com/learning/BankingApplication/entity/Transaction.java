@@ -2,7 +2,7 @@ package com.learning.BankingApplication.entity;
 
 import java.util.Date;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,6 +13,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 public class Transaction {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long transactionId;
 	private Date transactionDate;
 	private double transactionAmount; 
@@ -20,5 +23,9 @@ public class Transaction {
 	private long beneficiaryId;
 	private long senderId;
 	private String reasonTransaction;
+
+	@ManyToOne
+	@JoinColumn(name = "bank_trans_con", nullable = false)
+	BankAccount bankAccount;
 	
 }

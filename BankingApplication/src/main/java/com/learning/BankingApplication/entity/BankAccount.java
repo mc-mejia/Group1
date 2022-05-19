@@ -1,7 +1,7 @@
 package com.learning.BankingApplication.entity;
 import java.util.List;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,13 +13,21 @@ import java.sql.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-
+@Table(name = "bankAcc")
 public class BankAccount {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long accountId;
-	private long customerId;
+
+	@ManyToOne
+	@JoinColumn(name = "cust_acc_con", nullable = false)
+	private CustomerAccount customerAccount;
 	private double balance;
+
+	@OneToMany(targetEntity=com.learning.BankingApplication.entity.Transaction.class,
+			cascade= CascadeType.ALL, mappedBy="bankAccount")
 	List<Transaction> transactions;
-	private String approve; 
+	private boolean approve;
 	private Date dateOfCreation;
 	private String bankAccountType; 
 }

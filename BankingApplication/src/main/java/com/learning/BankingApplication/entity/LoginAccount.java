@@ -5,7 +5,7 @@ package com.learning.BankingApplication.entity;
 
 import java.sql.Date;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,7 +19,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(name="accounts")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class LoginAccount {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="accNumber")
 	private Long accountNumber; //primary key for db
 	private String accountType;
 	private boolean status;
