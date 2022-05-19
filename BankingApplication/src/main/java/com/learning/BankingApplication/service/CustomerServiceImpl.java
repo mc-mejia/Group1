@@ -62,7 +62,8 @@ public class CustomerServiceImpl implements CustomerService{
 
 	@Override
 	public boolean toggleCustomer(long customerId, String newStatus) {
-		// TODO Auto-generated method stub
+		CustomerAccount currentCustomer = customerRepository.getById(customerId);
+		currentCustomer.setApproved(newStatus);
 		return false;
 	}
 
