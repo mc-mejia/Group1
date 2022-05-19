@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class CustomerAccount {	
+public class CustomerAccount extends LoginAccount{	
 	private String customerService;
 	private Date dob;
 	private String customerName;
