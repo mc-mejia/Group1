@@ -32,8 +32,8 @@ public interface CustomerService {
 	boolean addBeneficiary(long customerId, Beneficiary beneficiary);
 	List<Beneficiary> getAllBeneficiariesByCustomerId(long customerId);
 	boolean deleteBeneficiaryById(long customerId, long beneficiaryId);
-	List<Beneficiary> getUnapprovedBeneficiaries();
-	Beneficiary approveBeneficiary(Beneficiary beneficiary);
+	boolean getUnapprovedBeneficiaries(long beneficiaryId);
+	boolean approveBeneficiary(Beneficiary beneficiary);
 	
 	/*Transaction Handling*/
 	boolean transferByCustomer(Transaction transaction);

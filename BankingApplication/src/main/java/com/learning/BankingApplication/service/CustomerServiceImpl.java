@@ -130,26 +130,37 @@ public class CustomerServiceImpl implements CustomerService{
 	@Override
 	public List<Beneficiary> getAllBeneficiariesByCustomerId(long customerId) {
 		// TODO Auto-generated method stub
+
 		CustomerAccount currentCustomer = customerRepository.getById(customerId);
+
 		return null;
 	}
 
 	@Override
 	public boolean deleteBeneficiaryById(long customerId, long beneficiaryId) {
+		// TODO Auto-generated method stub		
+		
+		beneficiaryRepository.deleteById(beneficiaryId);
+		return false;
+		
+	}
+
+	@Override
+	public boolean getUnapprovedBeneficiaries(long beneficiaryId) {
 		// TODO Auto-generated method stub
+		beneficiaryRepository.findById(beneficiaryId);
+		
+		
 		return false;
 	}
 
 	@Override
-	public List<Beneficiary> getUnapprovedBeneficiaries() {
+	public boolean approveBeneficiary(Beneficiary beneficiary) {
 		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Beneficiary approveBeneficiary(Beneficiary beneficiary) {
-		// TODO Auto-generated method stub
-		return null;
+		beneficiaryRepository.findAll();
+		
+		
+		return true;
 	}
 
 	
