@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 public class LoginAccount {
 	private Long accountNumber; //primary key for db
 	private String accountType;
-	private String status;
+	private boolean status;
 	private Date doc;
 	private String userName;
 	private String password;

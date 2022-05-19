@@ -51,7 +51,7 @@ public class CustomerServiceImpl implements CustomerService{
 	@Override
 	public CustomerAccount updateCustomerAccount(CustomerAccount customerAccount) {
 		// TODO Auto-generated method stub
-		return null;
+		return customerRepository.save(customerAccount);
 	}
 
 	@Override
@@ -60,12 +60,12 @@ public class CustomerServiceImpl implements CustomerService{
 	}
 
 	@Override
-	public boolean toggleCustomer(long customerId, String newStatus) {
+	public boolean toggleCustomer(long customerId, boolean newStatus) {
 		//toggling only possible if account already exists, assume no misuse
 		CustomerAccount currentCustomer = customerRepository.getById(customerId);
 		currentCustomer.setApproved(newStatus);
 		customerRepository.save(currentCustomer);
-		return false;
+		return newStatus;
 	}
 
 	
@@ -85,7 +85,7 @@ public class CustomerServiceImpl implements CustomerService{
 		BankAccount currentBankAccount = bankAccountRepository.getById(urlAccountNumber);
 		currentBankAccount.setApprove("APPROVED");
 		bankAccountRepository.save(currentBankAccount);
-		return null;
+		return currentBankAccount;
 	}
 
 	@Override
@@ -111,6 +111,7 @@ public class CustomerServiceImpl implements CustomerService{
 	public List<BankAccount> approveBankAccounts(List<BankAccount> accList) {
 		for (BankAccount ba: accList) {
 			ba = approveBankAccount(ba, ba.getAccountId());
+			accList.add(ba);
 		}
 		return accList;
 	}
@@ -129,6 +130,7 @@ public class CustomerServiceImpl implements CustomerService{
 	@Override
 	public List<Beneficiary> getAllBeneficiariesByCustomerId(long customerId) {
 		// TODO Auto-generated method stub
+		CustomerAccount currentCustomer = customerRepository.getById(customerId);
 		return null;
 	}
 
@@ -216,13 +218,10 @@ public class CustomerServiceImpl implements CustomerService{
 		return false;
 	}
 
-	
-	//==========
-	//Staff
-	//==========
+
 	@Override
 	public StaffAccount registerStaffAccount(StaffAccount staffAccount) {
-		staffAccount.setStatus("Disable");
+		staffAccount.setStatus(false);
 		LocalDate localDate = LocalDateTime.now().toLocalDate();
 		staffAccount.setDoc(java.sql.Date.valueOf(localDate));
 		return staffRepository.save(staffAccount);
@@ -234,11 +233,11 @@ public class CustomerServiceImpl implements CustomerService{
 	}
 
 	@Override
-	public boolean toggleStaff(long staffId, String newStatus) throws EntityNotFoundException{
+	public boolean toggleStaff(long staffId, boolean newStatus) throws EntityNotFoundException{
 		StaffAccount staffAccount = staffRepository.getById(staffId);
 		staffAccount.setStatus(newStatus);
 		staffRepository.save(staffAccount);
-		return true;
+		return newStatus;
 	}
 	
 }

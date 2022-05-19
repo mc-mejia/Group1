@@ -17,7 +17,7 @@ public interface CustomerService {
 	CustomerAccount getCustomerAccountById(long customerId);
 	CustomerAccount updateCustomerAccount(CustomerAccount customerAccount);
 	List<CustomerAccount> getAllCustomerAccounts();
-	boolean toggleCustomer(long customerId, String newStatus);
+	boolean toggleCustomer(long customerId, boolean newStatus);
 	
 	/*Bank Account Handling*/
 	BankAccount createBankAccount(BankAccount bankAccount);
@@ -47,5 +47,5 @@ public interface CustomerService {
 	/*Staff Handling*/
 	StaffAccount registerStaffAccount(StaffAccount staffAccount);
 	List<StaffAccount> getAllStaff();
-	boolean toggleStaff(long staffId, String newStatus);
+	boolean toggleStaff(long staffId, boolean newStatus);
 }

@@ -24,7 +24,7 @@ public class CustomerAccount {
 	//customer will have image 
 	private BufferedImage profilePicture;
 	private long phoneNo;
-	private String approved;
+	private boolean approved;
 	List<BankAccount>accounts;
 	
 }
