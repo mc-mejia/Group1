@@ -24,5 +24,12 @@ public class Beneficiary {
 	@ManyToOne
 	@JoinColumn(name = "cust_ben_con")
 	private CustomerAccount customerAccount;
+	@Override
+	public String toString() {
+		return "Beneficiary [beneficiaryId=" + beneficiaryId + ", accountNo=" + accountNo + ", approval=" + approval
+				+ ", dateOfApproval=" + dateOfApproval + ", customerAccount=" + customerAccount.getUserName() + "]";
+	}
+	
+	
 	
 }

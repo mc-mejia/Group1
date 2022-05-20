@@ -174,7 +174,7 @@ public class CustomerServiceImpl implements CustomerService{
 			throw new InsufficientBalanceException("Insufficient balance to transfer");
 		//update BankAccount balances appropriately (using repo calls)
 		fromAccount.setBalance(fromAccount.getBalance()-transaction.getTransactionAmount());
-		toAccount.setBalance(fromAccount.getBalance()+transaction.getTransactionAmount());
+		toAccount.setBalance(toAccount.getBalance()+transaction.getTransactionAmount());
 		bankAccountRepository.save(fromAccount);
 		bankAccountRepository.save(toAccount);
 		transactionRepository.save(transaction);

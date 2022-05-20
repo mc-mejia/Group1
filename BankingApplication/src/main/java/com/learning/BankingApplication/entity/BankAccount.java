@@ -20,7 +20,7 @@ public class BankAccount {
 	private long accountId;
 
 	@ManyToOne
-	@JoinColumn(name = "cust_acc_con", nullable = false)
+	@JoinColumn(name = "cust_acc_con")//, nullable = true) //changed from false to true
 	private CustomerAccount customerAccount;
 	private double balance;
 
@@ -29,5 +29,13 @@ public class BankAccount {
 	List<Transaction> transactions;
 	private boolean approve;
 	private Date dateOfCreation;
-	private String bankAccountType; 
+	private String bankAccountType;
+	@Override
+	public String toString() {
+		return "BankAccount [accountId=" + accountId + ", customerAccount=" + customerAccount.getUserName() + ", balance=" + balance
+				+ ", approve=" + approve + ", dateOfCreation=" + dateOfCreation
+				+ ", bankAccountType=" + bankAccountType + "]";
+	} 
+	
+	
 }

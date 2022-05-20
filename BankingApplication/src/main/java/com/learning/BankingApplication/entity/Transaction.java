@@ -27,5 +27,13 @@ public class Transaction {
 	@ManyToOne
 	@JoinColumn(name = "bank_trans_con", nullable = false)
 	BankAccount bankAccount;
+
+	@Override
+	public String toString() {
+		return "Transaction [transactionId=" + transactionId + ", transactionDate=" + transactionDate
+				+ ", transactionAmount=" + transactionAmount + ", transactionType=" + transactionType
+				+ ", beneficiaryId=" + beneficiaryId + ", senderId=" + senderId + ", reasonTransaction="
+				+ reasonTransaction + ", bankAccount=" + bankAccount.getAccountId() + "]";
+	}
 	
 }

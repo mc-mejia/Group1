@@ -19,6 +19,25 @@ import lombok.NoArgsConstructor;
 @Entity
 @PrimaryKeyJoinColumn(referencedColumnName = "accNumber")
 public class CustomerAccount extends LoginAccount{
+	
+	
+
+	public CustomerAccount(Long accountNumber, String accountType, boolean status, java.sql.Date doc, String userName,
+			String password, String customerService, Date dob, String customerName, String securityQuestion,
+			String securityAnswer, long ssn, long phoneNo, boolean approved, List<BankAccount> accounts,
+			List<Beneficiary> beneficiaries) {
+		super(accountNumber, accountType, status, doc, userName, password);
+		this.customerService = customerService;
+		this.dob = dob;
+		this.customerName = customerName;
+		this.securityQuestion = securityQuestion;
+		this.securityAnswer = securityAnswer;
+		this.ssn = ssn;
+		this.phoneNo = phoneNo;
+		this.approved = approved;
+		this.accounts = accounts;
+		this.beneficiaries = beneficiaries;
+	}
 
 	private String customerService;
 	private Date dob;
@@ -38,5 +57,14 @@ public class CustomerAccount extends LoginAccount{
 	@OneToMany(targetEntity=com.learning.BankingApplication.entity.Beneficiary.class,
 			cascade= CascadeType.ALL, mappedBy="customerAccount")
 	List<Beneficiary> beneficiaries;
+
+	@Override
+	public String toString() {
+		return "CustomerAccount [customerService=" + customerService + ", dob=" + dob + ", customerName=" + customerName
+				+ ", securityQuestion=" + securityQuestion + ", securityAnswer=" + securityAnswer + ", ssn=" + ssn
+				+ ", phoneNo=" + phoneNo + ", approved=" + approved + "]";
+	}
+	
+	
 	
 }

@@ -32,5 +32,12 @@ public class LoginAccount {
 	private Date doc;
 	private String userName;
 	private String password;
+	@Override
+	public String toString() {
+		return "LoginAccount [accountNumber=" + accountNumber + ", accountType=" + accountType + ", status=" + status
+				+ ", doc=" + doc + ", userName=" + userName + ", password=" + password + "]";
+	}
+	
+	
 
 }
