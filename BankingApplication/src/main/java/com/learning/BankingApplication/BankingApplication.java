@@ -12,8 +12,8 @@ public class BankingApplication {
 	public static void main(String[] args) {
 		
 		ApplicationContext ctx = SpringApplication.run(BankingApplication.class, args);
-		TestController tc = ctx.getBean("testController", TestController.class);
-		tc.run();
+//		TestController tc = ctx.getBean("testController", TestController.class);
+//		tc.run();
 		System.out.println("i am cool");
 	}
 

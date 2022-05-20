@@ -23,11 +23,11 @@ public class CustomerAccount extends LoginAccount{
 	
 
 	public CustomerAccount(Long accountNumber, String accountType, boolean status, java.sql.Date doc, String userName,
-			String password, String customerService, Date dob, String customerName, String securityQuestion,
+			String password, Date dob, String customerName, String securityQuestion,
 			String securityAnswer, long ssn, long phoneNo, boolean approved, List<BankAccount> accounts,
 			List<Beneficiary> beneficiaries) {
 		super(accountNumber, accountType, status, doc, userName, password);
-		this.customerService = customerService;
+
 		this.dob = dob;
 		this.customerName = customerName;
 		this.securityQuestion = securityQuestion;
@@ -39,7 +39,6 @@ public class CustomerAccount extends LoginAccount{
 		this.beneficiaries = beneficiaries;
 	}
 
-	private String customerService;
 	private Date dob;
 	private String customerName;
 	private String securityQuestion;
@@ -60,7 +59,7 @@ public class CustomerAccount extends LoginAccount{
 
 	@Override
 	public String toString() {
-		return "CustomerAccount [customerService=" + customerService + ", dob=" + dob + ", customerName=" + customerName
+		return "CustomerAccount [" + ", dob=" + dob + ", customerName=" + customerName
 				+ ", securityQuestion=" + securityQuestion + ", securityAnswer=" + securityAnswer + ", ssn=" + ssn
 				+ ", phoneNo=" + phoneNo + ", approved=" + approved + "]";
 	}

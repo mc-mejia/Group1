@@ -58,8 +58,8 @@ public class CustomerServiceImpl implements CustomerService{
 	}
 
 	@Override
-	@GetMapping(value = "/customer/:customerID")
-	public CustomerAccount getCustomerAccountById(@PathVariable("customerID") long customerId) throws EntityNotFoundException{
+	@GetMapping(value = "/customer/{customerID}")
+	public CustomerAccount getCustomerAccountById(@PathVariable(name="customerID") long customerId) throws EntityNotFoundException{
 
 		return customerRepository.getById(customerId);
 	}
@@ -100,24 +100,25 @@ public class CustomerServiceImpl implements CustomerService{
 	}
 
 	@Override
-	@PutMapping(value = "customer/:customerID/account/:accountNo")
-	public BankAccount approveBankAccount(@RequestBody BankAccount bankAccount, @PathVariable(name = "accountNo") long urlAccountNumber) {
+	@PutMapping(value = "customer/:customerID/account/{accountNo}")
+	public BankAccount approveBankAccount(@RequestBody BankAccount bankAccount, @PathVariable(name = "accountNo") long urlAccountNumber, @PathVariable(name="customerID") long cid ) {
 		BankAccount currentBankAccount = bankAccountRepository.getById(urlAccountNumber);
+		currentBankAccount.setCustomerAccount(customerRepository.getById(cid));
 		currentBankAccount.setApprove(true);
 		bankAccountRepository.save(currentBankAccount);
 		return currentBankAccount;
 	}
 
 	@Override
-	@GetMapping(value = "customer/:customerID/account")
-	public List<BankAccount> getAllBankAccountsById(@PathVariable long customerId) {
+	@GetMapping(value = "customer/{customerID}/account")
+	public List<BankAccount> getAllBankAccountsById(@PathVariable(name="customerID") long customerId) {
 		CustomerAccount currentCustomer = customerRepository.getById(customerId);
 		
 		return currentCustomer.getAccounts();
 	}
 
 	@Override
-	@GetMapping(value = "customer/:customerID/account/:accountID")
+	@GetMapping(value = "customer/{customerID}/account/{accountID}")
 	public BankAccount getBankAccountById(@PathVariable(name = "customerID") long customerId,@PathVariable(name = "accountID") long accountId) {
 		return bankAccountRepository.getById(accountId);
 	}
@@ -132,7 +133,7 @@ public class CustomerServiceImpl implements CustomerService{
 	@PutMapping(value = "staff/accounts/approve")
 	public List<BankAccount> approveBankAccounts(List<BankAccount> accList) {
 		for (BankAccount ba: accList) {
-			ba = approveBankAccount(ba, ba.getAccountId());
+			ba = approveBankAccount(ba, ba.getAccountId(), ba.getCustomerAccount().getAccountNumber());
 			accList.add(ba);
 		}
 		return accList;
@@ -144,15 +145,15 @@ public class CustomerServiceImpl implements CustomerService{
 	//==========
 	
 	@Override
-	@PostMapping(value = "customer/:customerID/beneficiary")
-	public boolean addBeneficiary(@PathVariable long customerId,@RequestBody Beneficiary beneficiary) {
+	@PostMapping(value = "customer/{customerID}/beneficiary")
+	public boolean addBeneficiary(@PathVariable(name="customerID") long customerId,@RequestBody Beneficiary beneficiary) {
 		beneficiaryRepository.save(beneficiary);
 		return true;
 	}
 
 	@Override
-	@GetMapping(value = "customer/:customerID/beneficiary")
-	public List<Beneficiary> getAllBeneficiariesByCustomerId(@PathVariable long customerId) {
+	@GetMapping(value = "customer/{customerID}/beneficiary")
+	public List<Beneficiary> getAllBeneficiariesByCustomerId(@PathVariable(name="customerID") long customerId) {
 
 		CustomerAccount currentCustomer = customerRepository.getById(customerId);
 		return currentCustomer.getBeneficiaries();

@@ -21,7 +21,7 @@ public interface CustomerService {
 	
 	/*Bank Account Handling*/
 	BankAccount createBankAccount(BankAccount bankAccount);
-	BankAccount approveBankAccount(BankAccount bankAccount, long urlAccountNumber);
+	BankAccount approveBankAccount(BankAccount bankAccount, long urlAccountNumber, long cid);
 	List<BankAccount> getAllBankAccountsById(long customerId);
 	BankAccount getBankAccountById(long customerId, long accountId);
 	List<BankAccount> getUnapprovedBankAccounts();
