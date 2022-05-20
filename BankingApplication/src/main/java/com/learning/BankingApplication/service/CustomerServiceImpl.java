@@ -191,7 +191,7 @@ public class CustomerServiceImpl implements CustomerService{
 
 
 	@Override
-	@PutMapping(value = "customer/transfer")
+	@PutMapping(value = {"customer/transfer", "staff/transfer"}) //suspicious
 	public boolean transfer(Transaction transaction) throws EntityNotFoundException, InsufficientBalanceException {
 		BankAccount fromAccount;
 		BankAccount toAccount;
@@ -219,14 +219,16 @@ public class CustomerServiceImpl implements CustomerService{
 
 
 	@Override
-	public boolean questionVerification(String username,String answer) {
+	@GetMapping(value = "customer/:username/forgot/question/answer")
+	public boolean questionVerification(@PathVariable(name = "username") String username, @PathVariable(name = "answer") String answer) {
 
 		CustomerAccount currentCustomer = customerRepository.getById(customerRepository.getIdbyUsername(username));
 		return currentCustomer.getSecurityAnswer().equals(answer);
 	}
 
 	@Override
-	public boolean updatePassword( String username, String password) {
+	@PutMapping(value = "customer/:username/forgot")
+	public boolean updatePassword(@PathVariable(name = "username") String username,@PathVariable(name = "password") String password) {
 
 		CustomerAccount currentCustomer = customerRepository.getById(customerRepository.getIdbyUsername(username));
 		currentCustomer.setPassword(password);
@@ -236,7 +238,8 @@ public class CustomerServiceImpl implements CustomerService{
 
 
 	@Override
-	public StaffAccount registerStaffAccount(StaffAccount staffAccount) {
+	@PostMapping(value = "admin/staff")
+	public StaffAccount registerStaffAccount(@RequestBody StaffAccount staffAccount) {
 		staffAccount.setStatus(false);
 		LocalDate localDate = LocalDateTime.now().toLocalDate();
 		staffAccount.setDoc(java.sql.Date.valueOf(localDate));
@@ -244,11 +247,13 @@ public class CustomerServiceImpl implements CustomerService{
 	}
 
 	@Override
+	@GetMapping(value = "admin/staff")
 	public List<StaffAccount> getAllStaff() {
 		return staffRepository.findAll();
 	}
 
 	@Override
+	@PutMapping(value = "admin/staff")
 	public boolean toggleStaff(long staffId, boolean newStatus) throws EntityNotFoundException{
 		StaffAccount staffAccount = staffRepository.getById(staffId);
 		staffAccount.setStatus(newStatus);
