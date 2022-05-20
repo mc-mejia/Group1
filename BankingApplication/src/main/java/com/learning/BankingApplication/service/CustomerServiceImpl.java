@@ -41,6 +41,8 @@ public class CustomerServiceImpl implements CustomerService{
 	
 	@Override
 	public CustomerAccount registerCustomerAccount(CustomerAccount customerAccount) {
+		LocalDate localDate = LocalDateTime.now().toLocalDate();
+		customerAccount.setDoc(java.sql.Date.valueOf( localDate));
 		return customerRepository.save(customerAccount);
 	}
 
@@ -64,7 +66,7 @@ public class CustomerServiceImpl implements CustomerService{
 	public boolean toggleCustomer(long customerId, boolean newStatus) {
 		//toggling only possible if account already exists, assume no misuse
 		CustomerAccount currentCustomer = customerRepository.getById(customerId);
-		currentCustomer.setApproved(newStatus);
+		currentCustomer.setStatus(newStatus);
 		customerRepository.save(currentCustomer);
 		return newStatus;
 	}
