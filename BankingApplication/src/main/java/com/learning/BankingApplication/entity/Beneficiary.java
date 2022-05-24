@@ -20,14 +20,14 @@ public class Beneficiary {
 	private long beneficiaryId;
 	private long accountNo;
 	private boolean approval;
-	private Date dateOfApproval;
+	private Date dateOfCreation;
 	@ManyToOne
 	@JoinColumn(name = "cust_ben_con")
 	private CustomerAccount customerAccount;
 	@Override
 	public String toString() {
 		return "Beneficiary [beneficiaryId=" + beneficiaryId + ", accountNo=" + accountNo + ", approval=" + approval
-				+ ", dateOfApproval=" + dateOfApproval + ", customerAccount=" + customerAccount.getUserName() + "]";
+				+ ", dateOfApproval=" + dateOfCreation + ", customerAccount=" + customerAccount.getUserName() + "]";
 	}
 	
 	
