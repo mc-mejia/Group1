@@ -14,7 +14,7 @@
 	<name>BankingApplication</name>
 	<description>Capstone project for Group1</description>
 	<properties>
-		<java.version>18</java.version>
+		<java.version>8</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
