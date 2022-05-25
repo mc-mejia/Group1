@@ -22,12 +22,14 @@ public class Beneficiary {
 	private boolean approval;
 	private Date dateOfCreation;
 	
+	@ManyToOne(targetEntity = CustomerAccount.class)
 	@JoinColumn(name = "accNumber")
 	private CustomerAccount customerAccount;
 
 	@Override
 	public String toString() {
 
+		return "Beneficiary [beneficiaryId=" + beneficiaryId + ", accountNo=" + bankAccountNo + ", approval=" + approval
 				+ ", dateOfApproval=" + dateOfCreation + "]";
 
 	}
