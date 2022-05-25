@@ -4,17 +4,13 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.EntityNotFoundException;
-
 import org.springframework.stereotype.Controller;
 
 import com.learning.BankingApplication.contracts.CustomerService;
 import com.learning.BankingApplication.entity.BankAccount;
 import com.learning.BankingApplication.entity.Beneficiary;
 import com.learning.BankingApplication.entity.CustomerAccount;
-import com.learning.BankingApplication.entity.StaffAccount;
 import com.learning.BankingApplication.entity.Transaction;
-import com.learning.BankingApplication.exceptions.InsufficientBalanceException;
 
 @Controller
 public class TestController {
@@ -39,12 +35,13 @@ public class TestController {
 //		listBnf.add(testBnf);
 //		Date testDate = Date.valueOf("1999-12-12");
 //		CustomerAccount testCustomer = new CustomerAccount(
-//				1l, "customer", true, testDate, "jdawg123",
+//				12l, "customer", true, testDate, "escrooge1",
 //				"password",
-//				"Hello", testDate, "Jiminy Cricket", 
-//				"Who is the puppet boy?", "Pinnochio", 
-//				1234590, 3053005, true, listBanks, listBnf);
-//		CustomerAccount dbCustomer = customerService.registerCustomerAccount(testCustomer);
+//				testDate, "Ebenezer Scrooge", 
+//				"What matters most?", "Money", 
+//				22345210, 4053005, true, listBanks, listBnf);
+//		CustomerAccount dbCustomer1 = customerService.registerCustomerAccount(testCustomer);
+//		System.out.println(dbCustomer1);
 //		
 //		
 //		BankAccount testBank = new BankAccount(1, dbCustomer, 100.0, listTrans, true, testDate, "savings");
@@ -52,9 +49,24 @@ public class TestController {
 //		customerService.createBankAccount(testBank);
 //		customerService.createBankAccount(testBank2);
 //		
-//		Beneficiary testBnf2 = new Beneficiary(1, 1, true, testDate, dbCustomer);
-//		customerService.addBeneficiary(6, testBnf2);
-//		
+
+		////////////////////////////////////////
+		//Testing Beneficiary, add and get list
+		///////////////////////////////////////
+		
+		
+		CustomerAccount dbCustomer = customerService.getCustomerAccountById(1);
+		Beneficiary testBnf5 = new Beneficiary(3l, 13l, true, Date.valueOf("4200-12-12"), dbCustomer);
+		customerService.addBeneficiary(dbCustomer.getAccountNumber(),testBnf5);
+		customerService.updateCustomerAccount(dbCustomer);
+		List<Beneficiary> list = customerService.getAllBeneficiariesByCustomerId(dbCustomer.getAccountNumber());
+		System.out.println(customerService.getCustomerAccountById(testBnf5.getBeneficiaryId()));
+		for(Beneficiary b:list) {
+			System.out.println(b);
+		}
+		/////////////////////////////////////////
+		
+		
 //		Transaction trans1 = new Transaction(1, testDate, 50.0, "Debit", 1, 2, "broke", testBank2);
 //		try {
 //			customerService.transfer(trans1);
@@ -70,11 +82,11 @@ public class TestController {
 //		StaffAccount testStaff = new StaffAccount(1l, "staff", true, testDate, "jdawg123",
 //				"password","jeff123");
 //		customerService.registerStaffAccount(testStaff);
-		
-		List<BankAccount> list = customerService.getAllBankAccountsById(23);
-		for(BankAccount b:list) {
-			System.out.println(b);
-		}
+//		
+//		List<BankAccount> list = customerService.getAllBankAccountsById(23);
+//		for(BankAccount b:list) {
+//			System.out.println(b);
+//		}
 	}
 	
 

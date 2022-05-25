@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 
@@ -36,25 +38,27 @@ public class CustomerAccount extends LoginAccount{
 		this.phoneNo = phoneNo;
 		this.approved = approved;
 		this.accounts = accounts;
-		this.beneficiaries = beneficiaries;
+
 	}
 
 	private Date dob;
 	private String customerName;
 	private String securityQuestion;
 	private String securityAnswer;
-	private long ssn;
+	private Long ssn;
 	//customer will have image 
 //	private byte[] profilePicture;
-	private long phoneNo;
+	private Long phoneNo;
 	private boolean approved;
 
 	@OneToMany(targetEntity=com.learning.BankingApplication.entity.BankAccount.class,
 			cascade= CascadeType.ALL, mappedBy="customerAccount")
 	List<BankAccount> accounts;
 
-	@OneToMany(targetEntity=com.learning.BankingApplication.entity.Beneficiary.class,
-			cascade= CascadeType.ALL, mappedBy="customerAccount")
+//	@OneToMany(targetEntity=com.learning.BankingApplication.entity.Beneficiary.class,
+//			cascade= CascadeType.ALL, mappedBy="customerAccount")
+	@OneToMany(cascade=CascadeType.ALL)
+	@JoinTable(name = "beneficiaries", joinColumns = @JoinColumn(name="accNumber"))
 	List<Beneficiary> beneficiaries;
 
 	@Override

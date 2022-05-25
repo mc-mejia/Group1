@@ -1,7 +1,9 @@
 package com.learning.BankingApplication.service;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,7 +34,7 @@ import com.learning.BankingApplication.repository.StaffRepository;
 import com.learning.BankingApplication.repository.TransactionRepository;
 
 import lombok.AllArgsConstructor;
-@CrossOrigin(origins = "http://localhost:8081")
+@CrossOrigin(origins = "http://localhost:4200")
 @Service
 @AllArgsConstructor
 @RestController
@@ -61,8 +63,9 @@ public class CustomerServiceImpl implements CustomerService{
 	@Override
 	@GetMapping(value = "/customer/{customerID}")
 	public CustomerAccount getCustomerAccountById(@PathVariable(name="customerID") long customerId) throws EntityNotFoundException{
-
+		
 		return customerRepository.getById(customerId);
+
 	}
 
 	@Override
@@ -146,8 +149,22 @@ public class CustomerServiceImpl implements CustomerService{
 	//==========
 	
 	@Override
-	@PostMapping(value = "customer/{customerID}/beneficiary")
-	public boolean addBeneficiary(@PathVariable(name="customerID") long customerId,@RequestBody Beneficiary beneficiary) {
+	@PostMapping(value = "customer/{customerID}/beneficiary") //@PathVariable(name="customerID")
+	public boolean addBeneficiary( long customerId,@RequestBody Beneficiary beneficiary) {
+//		CustomerAccount c  = getCustomerAccountById(customerId);
+//		List<Beneficiary> l1 = new ArrayList<>();
+//		l1.add(beneficiary);
+//		l1.addAll(c.getBeneficiaries());
+//		c.setBeneficiaries(l1);
+//		customerRepository.save(c);
+		
+		
+		LocalDate localDate = LocalDateTime.now().toLocalDate();
+		beneficiary.setCustomerAccount(customerRepository.getById(customerId));
+		beneficiary.setDateOfApproval(java.sql.Date.valueOf( localDate));
+		beneficiary.setApproval(false);
+		beneficiary.setBankAccountNo(1l);
+		
 		beneficiaryRepository.save(beneficiary);
 		return true;
 	}
@@ -155,16 +172,39 @@ public class CustomerServiceImpl implements CustomerService{
 	@Override
 	@GetMapping(value = "customer/{customerID}/beneficiary")
 	public List<Beneficiary> getAllBeneficiariesByCustomerId(@PathVariable(name="customerID") long customerId) {
-
-		CustomerAccount currentCustomer = customerRepository.getById(customerId);
-		return currentCustomer.getBeneficiaries();
+//		List<Beneficiary> list = new ArrayList<>();
+//		
+//		Date testDate = Date.valueOf("1999-12-12");
+//		CustomerAccount testCustomer = new CustomerAccount(
+//				1l, "customer", true, testDate, "jdawg123",
+//				"password",
+//				testDate, "Jiminy Cricket", 
+//				"Who is the puppet boy?", "Pinnochio", 
+//				1234590, 3053005, true, null, null);
+//		CustomerAccount dbCustomer = registerCustomerAccount(testCustomer);
+//		Beneficiary b1 = new Beneficiary(2, 2, true, testDate, dbCustomer);
+//		Beneficiary b2 = new Beneficiary(1, 1, true, testDate, dbCustomer);
+//		
+//		list.add(b2);
+//		list.add(b1);
+//		return list;
+//		CustomerAccount c = customerRepository.getById(customerId);
+//		List<Long> idList = new ArrayList<>();
+//		for(Beneficiary b: c.getBeneficiaries()) {
+//			idList.add(b.getBeneficiaryId());
+//		}
+		List<Beneficiary> list  = beneficiaryRepository.getBeneficiariesForCustomer(customerId);
+		
+////		CustomerAccount currentCustomer = customerRepository.getById(customerId);
+//		List<Beneficiary> list  = beneficiaryRepository.getBeneficiariesForMember(customerId);
+		return list;
 	}
 
 	@Override
-	@DeleteMapping(value = "customer/:customerID/beneficiary/:beneficiaryID")
+	@DeleteMapping(value = "customer/{customerID}/beneficiary/{beneficiaryID}")
 	public boolean deleteBeneficiaryById(@PathVariable(name = "customerID") long customerId,@PathVariable(name = "beneficiaryID") long beneficiaryId) {
 
-		beneficiaryRepository.deleteById(beneficiaryId);
+//		beneficiaryRepository.deleteById(beneficiaryId);
 		return true;
 		
 	}

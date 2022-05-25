@@ -17,17 +17,19 @@ public class Beneficiary {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long beneficiaryId;
-	private long accountNo;
+	private Long beneficiaryId;
+	private Long bankAccountNo;
 	private boolean approval;
 	private Date dateOfCreation;
-	@ManyToOne
-	@JoinColumn(name = "cust_ben_con")
+	
+	@JoinColumn(name = "accNumber")
 	private CustomerAccount customerAccount;
+
 	@Override
 	public String toString() {
-		return "Beneficiary [beneficiaryId=" + beneficiaryId + ", accountNo=" + accountNo + ", approval=" + approval
-				+ ", dateOfApproval=" + dateOfCreation + ", customerAccount=" + customerAccount.getUserName() + "]";
+
+				+ ", dateOfApproval=" + dateOfCreation + "]";
+
 	}
 	
 	
