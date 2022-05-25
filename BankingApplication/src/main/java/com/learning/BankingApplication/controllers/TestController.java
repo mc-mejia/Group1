@@ -30,10 +30,10 @@ public class TestController {
 //		List<BankAccount> listBanks = new ArrayList<>();
 //		Beneficiary testBnf = new Beneficiary();
 //		List<Beneficiary> listBnf = new ArrayList<>();
-//		List<Transaction> listTrans = new ArrayList<>();
+		List<Transaction> listTrans = new ArrayList<>();
 //		
 //		listBnf.add(testBnf);
-//		Date testDate = Date.valueOf("1999-12-12");
+		Date testDate = Date.valueOf("1999-12-12");
 //		CustomerAccount testCustomer = new CustomerAccount(
 //				12l, "customer", true, testDate, "escrooge1",
 //				"password",
@@ -43,11 +43,21 @@ public class TestController {
 //		CustomerAccount dbCustomer1 = customerService.registerCustomerAccount(testCustomer);
 //		System.out.println(dbCustomer1);
 //		
-//		
-//		BankAccount testBank = new BankAccount(1, dbCustomer, 100.0, listTrans, true, testDate, "savings");
-//		BankAccount testBank2 = new BankAccount(2, dbCustomer, 200.0, listTrans, true, testDate, "checking");
+		
+		////////////////////////////////////////
+		//Testing Bank Accounts
+		///////////////////////////////////////
+		
+//		CustomerAccount dbCustomer = customerService.getCustomerAccountById(5);
+//		BankAccount testBank = new BankAccount(3, dbCustomer, 100.0, listTrans, false, testDate, "savings");
+//		BankAccount testBank2 = new BankAccount(4, dbCustomer, 200.0, listTrans, false, testDate, "checking");
 //		customerService.createBankAccount(testBank);
 //		customerService.createBankAccount(testBank2);
+//		
+//		List<BankAccount> bAccounts = customerService.getUnapprovedBankAccounts();
+//		customerService.approveBankAccounts(bAccounts);
+//		System.out.println(customerService.getAllBankAccountsById(5));
+		
 //		
 
 		////////////////////////////////////////
@@ -55,15 +65,15 @@ public class TestController {
 		///////////////////////////////////////
 		
 		
-		CustomerAccount dbCustomer = customerService.getCustomerAccountById(1);
-		Beneficiary testBnf5 = new Beneficiary(3l, 13l, true, Date.valueOf("4200-12-12"), dbCustomer);
-		customerService.addBeneficiary(dbCustomer.getAccountNumber(),testBnf5);
-		customerService.updateCustomerAccount(dbCustomer);
-		List<Beneficiary> list = customerService.getAllBeneficiariesByCustomerId(dbCustomer.getAccountNumber());
-		System.out.println(customerService.getCustomerAccountById(testBnf5.getBeneficiaryId()));
-		for(Beneficiary b:list) {
-			System.out.println(b);
-		}
+//		CustomerAccount dbCustomer = customerService.getCustomerAccountById(1);
+//		Beneficiary testBnf5 = new Beneficiary(3l, 13l, true, Date.valueOf("4200-12-12"), dbCustomer);
+//		customerService.addBeneficiary(dbCustomer.getAccountNumber(),testBnf5);
+//		customerService.updateCustomerAccount(dbCustomer);
+//		List<Beneficiary> list = customerService.getAllBeneficiariesByCustomerId(dbCustomer.getAccountNumber());
+//		System.out.println(customerService.getCustomerAccountById(testBnf5.getBeneficiaryId()));
+//		for(Beneficiary b:list) {
+//			System.out.println(b);
+//		}
 		/////////////////////////////////////////
 		
 		

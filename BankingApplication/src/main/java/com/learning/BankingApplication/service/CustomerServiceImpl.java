@@ -138,7 +138,6 @@ public class CustomerServiceImpl implements CustomerService{
 	public List<BankAccount> approveBankAccounts(List<BankAccount> accList) {
 		for (BankAccount ba: accList) {
 			ba = approveBankAccount(ba, ba.getAccountId(), ba.getCustomerAccount().getAccountNumber());
-			accList.add(ba);
 		}
 		return accList;
 	}
@@ -161,7 +160,7 @@ public class CustomerServiceImpl implements CustomerService{
 		
 		LocalDate localDate = LocalDateTime.now().toLocalDate();
 		beneficiary.setCustomerAccount(customerRepository.getById(customerId));
-		beneficiary.setDateOfApproval(java.sql.Date.valueOf( localDate));
+		beneficiary.setDateOfCreation(java.sql.Date.valueOf( localDate));
 		beneficiary.setApproval(false);
 		beneficiary.setBankAccountNo(1l);
 		
