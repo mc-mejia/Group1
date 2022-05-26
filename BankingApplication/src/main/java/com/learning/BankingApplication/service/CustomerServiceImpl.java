@@ -162,7 +162,7 @@ public class CustomerServiceImpl implements CustomerService{
 		beneficiary.setCustomerAccount(customerRepository.getById(customerId));
 		beneficiary.setDateOfCreation(java.sql.Date.valueOf( localDate));
 		beneficiary.setApproval(false);
-		beneficiary.setBankAccountNo(1l);
+		//beneficiary.setBankAccountNo(1l);
 		
 		beneficiaryRepository.save(beneficiary);
 		return true;
@@ -233,7 +233,8 @@ public class CustomerServiceImpl implements CustomerService{
 
 	@Override
 	@PutMapping(value = {"customer/transfer", "staff/transfer"}) //suspicious
-	public boolean transfer(Transaction transaction) throws EntityNotFoundException, InsufficientBalanceException {
+	public boolean transfer(@RequestBody Transaction transaction) throws EntityNotFoundException, InsufficientBalanceException {
+		System.out.println(transaction);
 		BankAccount fromAccount;
 		BankAccount toAccount;
 		//check if accounts exist
@@ -245,7 +246,8 @@ public class CustomerServiceImpl implements CustomerService{
 		//update BankAccount balances appropriately (using repo calls)
 		fromAccount.setBalance(fromAccount.getBalance()-transaction.getTransactionAmount());
 		toAccount.setBalance(toAccount.getBalance()+transaction.getTransactionAmount());
-		bankAccountRepository.save(fromAccount);
+		
+		transaction.setBankAccount(bankAccountRepository.save(fromAccount));
 		bankAccountRepository.save(toAccount);
 		transactionRepository.save(transaction);
 		//call repo method to add the transaction

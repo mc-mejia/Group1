@@ -33,7 +33,7 @@ public class Transaction {
 		return "Transaction [transactionId=" + transactionId + ", transactionDate=" + transactionDate
 				+ ", transactionAmount=" + transactionAmount + ", transactionType=" + transactionType
 				+ ", beneficiaryId=" + beneficiaryId + ", senderId=" + senderId + ", reasonTransaction="
-				+ reasonTransaction + ", bankAccount=" + bankAccount.getAccountId() + "]";
+				+ reasonTransaction + ", bankAccount=" + /*bankAccount.getAccountId()*/"]";
 	}
 	
 }
