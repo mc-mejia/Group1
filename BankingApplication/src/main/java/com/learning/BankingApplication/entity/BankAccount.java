@@ -3,6 +3,8 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,12 +22,13 @@ public class BankAccount {
 	private long accountId;
 
 	@ManyToOne
-	@JoinColumn(name = "cust_acc_con")//, nullable = true) //changed from false to true
+	@JoinColumn(name = "cust_to_bank_join_col")//, nullable = true) //changed from false to true
+	@JsonBackReference
 	private CustomerAccount customerAccount;
 	private double balance;
 
 	@OneToMany(targetEntity=com.learning.BankingApplication.entity.Transaction.class,
-			cascade= CascadeType.ALL, mappedBy="bankAccount")
+			/*cascade= CascadeType.ALL,*/ mappedBy="bankAccount")
 	List<Transaction> transactions;
 	private boolean approve;
 	private Date dateOfCreation;
