@@ -4,6 +4,8 @@ import java.sql.Date;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,6 +26,7 @@ public class Beneficiary {
 	
 	@ManyToOne(targetEntity = CustomerAccount.class)
 	@JoinColumn(name = "accNumber")
+	@JsonBackReference
 	private CustomerAccount customerAccount;
 
 	@Override

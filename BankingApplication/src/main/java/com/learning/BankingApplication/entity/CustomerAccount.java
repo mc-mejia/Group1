@@ -11,6 +11,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -52,13 +54,15 @@ public class CustomerAccount extends LoginAccount{
 	private boolean approved;
 
 	@OneToMany(targetEntity=com.learning.BankingApplication.entity.BankAccount.class,
-			cascade= CascadeType.ALL, mappedBy="customerAccount")
+			/*cascade= CascadeType.ALL,*/ mappedBy="customerAccount")
+	@JsonManagedReference
 	List<BankAccount> accounts;
 
-//	@OneToMany(targetEntity=com.learning.BankingApplication.entity.Beneficiary.class,
-//			cascade= CascadeType.ALL, mappedBy="customerAccount")
-	@OneToMany(cascade=CascadeType.ALL)
-	@JoinTable(name = "beneficiaries", joinColumns = @JoinColumn(name="accNumber"))
+	@OneToMany(targetEntity=com.learning.BankingApplication.entity.Beneficiary.class,
+			/*cascade= CascadeType.ALL,*/ mappedBy="customerAccount")
+	@JsonManagedReference
+	//@OneToMany(cascade=CascadeType.ALL)
+	//@JoinTable(name = "beneficiaries", joinColumns = @JoinColumn(name="accNumber"))
 	List<Beneficiary> beneficiaries;
 
 	@Override

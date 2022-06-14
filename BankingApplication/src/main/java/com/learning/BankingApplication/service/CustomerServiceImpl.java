@@ -57,11 +57,12 @@ public class CustomerServiceImpl implements CustomerService{
 	public CustomerAccount registerCustomerAccount(@RequestBody CustomerAccount customerAccount) {
 		LocalDate localDate = LocalDateTime.now().toLocalDate();
 		customerAccount.setDoc(java.sql.Date.valueOf( localDate));
+		customerAccount.setStatus(true);
 		return customerRepository.save(customerAccount);
 	}
 
 	@Override
-	@GetMapping(value = "/customer/{customerID}")
+	@GetMapping(value = {"/customer/{customerID}", "/staff/customer/{customerID}"})
 	public CustomerAccount getCustomerAccountById(@PathVariable(name="customerID") long customerId) throws EntityNotFoundException{
 		
 		return customerRepository.getById(customerId);
@@ -69,7 +70,7 @@ public class CustomerServiceImpl implements CustomerService{
 	}
 
 	@Override
-	@PutMapping(value = "/customer/:customerID")
+	@PutMapping(value = "/customer/{customerID}")
 	public CustomerAccount updateCustomerAccount(@RequestBody CustomerAccount customerAccount) {
 		return customerRepository.save(customerAccount);
 	}
@@ -82,12 +83,11 @@ public class CustomerServiceImpl implements CustomerService{
 
 	@Override
 	@PutMapping(value = "/staff/customer")
-	public boolean toggleCustomer(long customerId, boolean newStatus) {
+	public CustomerAccount toggleCustomer(@RequestBody CustomerAccount ca) {
 		//toggling only possible if account already exists, assume no misuse
-		CustomerAccount currentCustomer = customerRepository.getById(customerId);
-		currentCustomer.setStatus(newStatus);
-		customerRepository.save(currentCustomer);
-		return newStatus;
+		CustomerAccount currentCustomer = customerRepository.getById(ca.getAccountNumber());
+		currentCustomer.setStatus(ca.isStatus());
+		return customerRepository.save(currentCustomer);
 	}
 
 	
@@ -96,21 +96,23 @@ public class CustomerServiceImpl implements CustomerService{
 	//==========
 	
 	@Override
-	@PostMapping(value = "/customer/:customerID/account")
-	public BankAccount createBankAccount(@RequestBody BankAccount bankAccount) {
+	@PostMapping(value = "/customer/{customerID}/account")
+	public BankAccount createBankAccount(@RequestBody BankAccount bankAccount, @PathVariable(name="customerID") long customerId) {
+		bankAccount.setCustomerAccount(customerRepository.getById(customerId));
 		LocalDate localDate = LocalDateTime.now().toLocalDate();
 		bankAccount.setDateOfCreation(java.sql.Date.valueOf( localDate));
 		return bankAccountRepository.save(bankAccount);
 	}
 
 	@Override
-	@PutMapping(value = "customer/:customerID/account/{accountNo}")
-	public BankAccount approveBankAccount(@RequestBody BankAccount bankAccount, @PathVariable(name = "accountNo") long urlAccountNumber, @PathVariable(name="customerID") long cid ) {
-		BankAccount currentBankAccount = bankAccountRepository.getById(urlAccountNumber);
-		currentBankAccount.setCustomerAccount(customerRepository.getById(cid));
+	@PutMapping(value = {"customer/{customerID}/account/{accountNo}", "/staff/accounts/approve"})
+	public BankAccount approveBankAccount(@RequestBody BankAccount bankAccount/*, @PathVariable(name = "accountNo") long urlAccountNumber, @PathVariable(name="customerID") long cid */) {
+		
+		
+		BankAccount currentBankAccount = bankAccountRepository.getById(bankAccount.getAccountId());
+//		currentBankAccount.setCustomerAccount(customerRepository.getById(cid));
 		currentBankAccount.setApprove(true);
-		bankAccountRepository.save(currentBankAccount);
-		return currentBankAccount;
+		return bankAccountRepository.save(currentBankAccount);
 	}
 
 	@Override
@@ -122,8 +124,8 @@ public class CustomerServiceImpl implements CustomerService{
 	}
 
 	@Override
-	@GetMapping(value = "customer/{customerID}/account/{accountID}")
-	public BankAccount getBankAccountById(@PathVariable(name = "customerID") long customerId,@PathVariable(name = "accountID") long accountId) {
+	@GetMapping(value = {"customer/{customerID}/account/{accountID}", "staff/account/{accountID}"})
+	public BankAccount getBankAccountById(/*@PathVariable(name = "customerID") long customerId,*/@PathVariable(name = "accountID") long accountId) {
 		return bankAccountRepository.getById(accountId);
 	}
 
@@ -134,10 +136,10 @@ public class CustomerServiceImpl implements CustomerService{
 	}
 
 	@Override
-	@PutMapping(value = "staff/accounts/approve")
+	//@PutMapping(value = "staff/accounts/approve")
 	public List<BankAccount> approveBankAccounts(List<BankAccount> accList) {
 		for (BankAccount ba: accList) {
-			ba = approveBankAccount(ba, ba.getAccountId(), ba.getCustomerAccount().getAccountNumber());
+			ba = approveBankAccount(ba);
 		}
 		return accList;
 	}
@@ -149,7 +151,7 @@ public class CustomerServiceImpl implements CustomerService{
 	
 	@Override
 	@PostMapping(value = "customer/{customerID}/beneficiary") //@PathVariable(name="customerID")
-	public boolean addBeneficiary( long customerId,@RequestBody Beneficiary beneficiary) {
+	public Beneficiary addBeneficiary(@PathVariable(name = "customerID") long customerId,@RequestBody Beneficiary beneficiary) {
 //		CustomerAccount c  = getCustomerAccountById(customerId);
 //		List<Beneficiary> l1 = new ArrayList<>();
 //		l1.add(beneficiary);
@@ -164,8 +166,7 @@ public class CustomerServiceImpl implements CustomerService{
 		beneficiary.setApproval(false);
 		//beneficiary.setBankAccountNo(1l);
 		
-		beneficiaryRepository.save(beneficiary);
-		return true;
+		return beneficiaryRepository.save(beneficiary);
 	}
 
 	@Override
@@ -203,7 +204,7 @@ public class CustomerServiceImpl implements CustomerService{
 	@DeleteMapping(value = "customer/{customerID}/beneficiary/{beneficiaryID}")
 	public boolean deleteBeneficiaryById(@PathVariable(name = "customerID") long customerId,@PathVariable(name = "beneficiaryID") long beneficiaryId) {
 
-//		beneficiaryRepository.deleteById(beneficiaryId);
+		beneficiaryRepository.deleteById(beneficiaryId);
 		return true;
 		
 	}
@@ -218,10 +219,9 @@ public class CustomerServiceImpl implements CustomerService{
 
 	@Override
 	@PutMapping(value = "staff/beneficiary")
-	public boolean approveBeneficiary(@RequestBody Beneficiary beneficiary) {
+	public Beneficiary approveBeneficiary(@RequestBody Beneficiary beneficiary) {
 		beneficiary.setApproval(true);
-		beneficiaryRepository.save(beneficiary);
-		return true;
+		return beneficiaryRepository.save(beneficiary);
 	}
 
 	
@@ -233,8 +233,10 @@ public class CustomerServiceImpl implements CustomerService{
 
 	@Override
 	@PutMapping(value = {"customer/transfer", "staff/transfer"}) //suspicious
-	public boolean transfer(@RequestBody Transaction transaction) throws EntityNotFoundException, InsufficientBalanceException {
+	public Transaction transfer(@RequestBody Transaction transaction) throws EntityNotFoundException, InsufficientBalanceException {
 		System.out.println(transaction);
+		LocalDate localDate = LocalDateTime.now().toLocalDate();
+		transaction.setTransactionDate(java.sql.Date.valueOf( localDate));
 		BankAccount fromAccount;
 		BankAccount toAccount;
 		//check if accounts exist
@@ -249,9 +251,8 @@ public class CustomerServiceImpl implements CustomerService{
 		
 		transaction.setBankAccount(bankAccountRepository.save(fromAccount));
 		bankAccountRepository.save(toAccount);
-		transactionRepository.save(transaction);
 		//call repo method to add the transaction
-		return true;
+		return transactionRepository.save(transaction);
 	}
 
 	
@@ -262,7 +263,7 @@ public class CustomerServiceImpl implements CustomerService{
 
 
 	@Override
-	@GetMapping(value = "customer/:username/forgot/question/answer")
+	@GetMapping(value = "customer/{username}/forgot/question/answer")
 	public boolean questionVerification(@PathVariable(name = "username") String username, @PathVariable(name = "answer") String answer) {
 
 		CustomerAccount currentCustomer = customerRepository.getById(customerRepository.getIdbyUsername(username));
@@ -270,7 +271,7 @@ public class CustomerServiceImpl implements CustomerService{
 	}
 
 	@Override
-	@PutMapping(value = "customer/:username/forgot")
+	@PutMapping(value = "customer/{username}/forgot")
 	public boolean updatePassword(@PathVariable(name = "username") String username,@PathVariable(name = "password") String password) {
 
 		CustomerAccount currentCustomer = customerRepository.getById(customerRepository.getIdbyUsername(username));
@@ -283,7 +284,7 @@ public class CustomerServiceImpl implements CustomerService{
 	@Override
 	@PostMapping(value = "admin/staff")
 	public StaffAccount registerStaffAccount(@RequestBody StaffAccount staffAccount) {
-		staffAccount.setStatus(false);
+		staffAccount.setStatus(true);
 		LocalDate localDate = LocalDateTime.now().toLocalDate();
 		staffAccount.setDoc(java.sql.Date.valueOf(localDate));
 		return staffRepository.save(staffAccount);
@@ -297,11 +298,10 @@ public class CustomerServiceImpl implements CustomerService{
 
 	@Override
 	@PutMapping(value = "admin/staff")
-	public boolean toggleStaff(long staffId, boolean newStatus) throws EntityNotFoundException{
-		StaffAccount staffAccount = staffRepository.getById(staffId);
-		staffAccount.setStatus(newStatus);
-		staffRepository.save(staffAccount);
-		return newStatus;
+	public StaffAccount toggleStaff(@RequestBody StaffAccount sa) throws EntityNotFoundException{
+		StaffAccount staffAccount = staffRepository.getById(sa.getAccountNumber());
+		staffAccount.setStatus(sa.isStatus());
+		return staffRepository.save(staffAccount);
 	}
 	
 }

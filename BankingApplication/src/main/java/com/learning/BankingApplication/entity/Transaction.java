@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,6 +28,7 @@ public class Transaction {
 
 	@ManyToOne
 	@JoinColumn(name = "bank_trans_con", nullable = false)
+	@JsonBackReference
 	BankAccount bankAccount;
 
 	@Override
