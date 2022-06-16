@@ -51,7 +51,7 @@ import com.learning.BankingApplication.security.JwtUtils;
 import com.learning.BankingApplication.security.LoginRequest;
 
 import lombok.AllArgsConstructor;
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*", maxAge=3600)
 @Service
 @AllArgsConstructor
 @RestController
