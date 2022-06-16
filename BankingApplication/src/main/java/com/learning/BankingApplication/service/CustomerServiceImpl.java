@@ -338,7 +338,7 @@ public class CustomerServiceImpl implements CustomerService{
 
 
 	@Override
-	@GetMapping(value = "customer/{username}/forgot/question/answer")
+	@GetMapping(value = "customer/{username}/forgot/question/{answer}")
 	public boolean questionVerification(@PathVariable(name = "username") String username, @PathVariable(name = "answer") String answer) {
 
 		CustomerAccount currentCustomer = customerRepository.getById(customerRepository.getIdbyUsername(username));
@@ -346,7 +346,7 @@ public class CustomerServiceImpl implements CustomerService{
 	}
 
 	@Override
-	@PutMapping(value = "customer/{username}/forgot")
+	@PutMapping(value = "customer/{username}/forgot/{password}")
 	public boolean updatePassword(@PathVariable(name = "username") String username,@PathVariable(name = "password") String password) {
 
 		CustomerAccount currentCustomer = customerRepository.getById(customerRepository.getIdbyUsername(username));

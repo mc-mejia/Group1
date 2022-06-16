@@ -33,6 +33,7 @@ public class BankAccount {
 	private boolean approve;
 	private Date dateOfCreation;
 	private String bankAccountType;
+	private String label;
 	@Override
 	public String toString() {
 		return "BankAccount [accountId=" + accountId + ", customerAccount=" + customerAccount.getUsername() + ", balance=" + balance
