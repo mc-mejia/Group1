@@ -30,7 +30,7 @@ public class CustomerAccount extends LoginAccount{
 			String password, Date dob, String customerName, String securityQuestion,
 			String securityAnswer, long ssn, long phoneNo, boolean approved, List<BankAccount> accounts,
 			List<Beneficiary> beneficiaries) {
-		super(accountNumber, accountType, status, doc, userName, password);
+		super(accountNumber, accountType, status, doc, userName, password, null, null, null);
 
 		this.dob = dob;
 		this.customerName = customerName;

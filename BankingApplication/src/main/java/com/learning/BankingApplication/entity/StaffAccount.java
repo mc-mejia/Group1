@@ -22,7 +22,7 @@ public class StaffAccount extends LoginAccount{
 
 	public StaffAccount(Long accountNumber, String accountType, boolean status, Date doc, String userName,
 			String password, String staffName) {
-		super(accountNumber, accountType, status, doc, userName, password);
+		super(accountNumber, accountType, status, doc, userName, password, null, null, null);
 		this.staffName = staffName;
 	}
 

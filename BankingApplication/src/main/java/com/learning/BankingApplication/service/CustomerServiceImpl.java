@@ -1,14 +1,24 @@
 package com.learning.BankingApplication.service;
 
+import java.security.Principal;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,14 +34,21 @@ import com.learning.BankingApplication.contracts.CustomerService;
 import com.learning.BankingApplication.entity.BankAccount;
 import com.learning.BankingApplication.entity.Beneficiary;
 import com.learning.BankingApplication.entity.CustomerAccount;
+import com.learning.BankingApplication.entity.ERole;
+import com.learning.BankingApplication.entity.LoginAccount;
+import com.learning.BankingApplication.entity.Role;
 import com.learning.BankingApplication.entity.StaffAccount;
 import com.learning.BankingApplication.entity.Transaction;
 import com.learning.BankingApplication.exceptions.InsufficientBalanceException;
 import com.learning.BankingApplication.repository.BankAccountRepository;
 import com.learning.BankingApplication.repository.BeneficiaryRepository;
 import com.learning.BankingApplication.repository.CustomerRepository;
+import com.learning.BankingApplication.repository.RoleRepository;
 import com.learning.BankingApplication.repository.StaffRepository;
 import com.learning.BankingApplication.repository.TransactionRepository;
+import com.learning.BankingApplication.security.JwtResponse;
+import com.learning.BankingApplication.security.JwtUtils;
+import com.learning.BankingApplication.security.LoginRequest;
 
 import lombok.AllArgsConstructor;
 @CrossOrigin(origins = "http://localhost:4200")
@@ -46,7 +63,32 @@ public class CustomerServiceImpl implements CustomerService{
 	BeneficiaryRepository beneficiaryRepository;
 	TransactionRepository transactionRepository;
 	StaffRepository staffRepository;
+	AuthenticationManager authenticationManager;
+	JwtUtils jwtUtils;
+	PasswordEncoder encoder;
+	RoleRepository roleRepository;
 	
+	//==========
+	//Authentication/Security
+	//==========
+	
+	@PostMapping(value = {"/admin/authenticate", "/staff/authenticate", "/customer/authenticate"})
+	public ResponseEntity<?> authenticate(@Valid @RequestBody LoginRequest loginRequest){
+		Authentication authentication = authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken
+				(loginRequest.getUsername(), loginRequest.getPassword()));
+		
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		
+		String jwt = jwtUtils.generateJwtToken(authentication);
+		LoginAccount userDetailsImpl = (LoginAccount) authentication.getPrincipal();
+		
+		List<String> roles = userDetailsImpl.getAuthorities().stream().map(item->item.getAuthority()).collect(Collectors.toList());
+		
+		return ResponseEntity.ok(new JwtResponse(jwt,userDetailsImpl.getAccountNumber()
+				,userDetailsImpl.getUsername()
+				,roles));
+	}
 
 	//==========
 	//Customer
@@ -58,6 +100,39 @@ public class CustomerServiceImpl implements CustomerService{
 		LocalDate localDate = LocalDateTime.now().toLocalDate();
 		customerAccount.setDoc(java.sql.Date.valueOf( localDate));
 		customerAccount.setStatus(true);
+		
+		customerAccount.setPassword(encoder.encode(customerAccount.getPassword()));
+		
+		Set<Role> roles = new HashSet<>();
+		
+		roles.add(roleRepository.findByName(ERole.ROLE_USER).orElseThrow(()->new RuntimeException("Error: Role  Not Found")));
+		
+//		if(customerAccount.getStrRole() == null) {
+//			roles.add(roleRepository.findByName(ERole.ROLE_USER).orElseThrow(()->new RuntimeException("Error: Role  Not Found")));
+//		}
+//		else {
+//			switch (customerAccount.getStrRole()) {
+//	        case "admin":
+//	          Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
+//	              .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+//	          roles.add(adminRole);
+//
+//	          break;
+//	        case "staff":
+//	          Role modRole = roleRepository.findByName(ERole.ROLE_STAFF)
+//	              .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+//	          roles.add(modRole);
+//
+//	          break;
+//	        default:
+//	          Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+//	              .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+//	          roles.add(userRole);
+//	        }
+//		}
+		
+		customerAccount.setRoles(roles);
+		
 		return customerRepository.save(customerAccount);
 	}
 
@@ -287,6 +362,15 @@ public class CustomerServiceImpl implements CustomerService{
 		staffAccount.setStatus(true);
 		LocalDate localDate = LocalDateTime.now().toLocalDate();
 		staffAccount.setDoc(java.sql.Date.valueOf(localDate));
+		
+		staffAccount.setPassword(encoder.encode(staffAccount.getPassword()));
+		
+		Set<Role> roles = new HashSet<>();
+		
+		roles.add(roleRepository.findByName(ERole.ROLE_STAFF).orElseThrow(()->new RuntimeException("Error: Role  Not Found")));
+		
+		staffAccount.setRoles(roles);
+		
 		return staffRepository.save(staffAccount);
 	}
 

@@ -35,7 +35,7 @@ public class BankAccount {
 	private String bankAccountType;
 	@Override
 	public String toString() {
-		return "BankAccount [accountId=" + accountId + ", customerAccount=" + customerAccount.getUserName() + ", balance=" + balance
+		return "BankAccount [accountId=" + accountId + ", customerAccount=" + customerAccount.getUsername() + ", balance=" + balance
 				+ ", approve=" + approve + ", dateOfCreation=" + dateOfCreation
 				+ ", bankAccountType=" + bankAccountType + "]";
 	} 
