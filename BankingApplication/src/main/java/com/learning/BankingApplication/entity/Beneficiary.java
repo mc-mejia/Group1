@@ -23,6 +23,7 @@ public class Beneficiary {
 	private Long bankAccountNo;
 	private boolean approval;
 	private Date dateOfCreation;
+	private String label;
 	
 	@ManyToOne(targetEntity = CustomerAccount.class)
 	@JoinColumn(name = "accNumber")
