@@ -161,7 +161,7 @@ public class CustomerServiceImpl implements CustomerService{
 	public CustomerAccount toggleCustomer(@RequestBody CustomerAccount ca) {
 		//toggling only possible if account already exists, assume no misuse
 		CustomerAccount currentCustomer = customerRepository.getById(ca.getAccountNumber());
-		currentCustomer.setStatus(ca.isStatus());
+		currentCustomer.setStatus(!ca.isStatus());
 		return customerRepository.save(currentCustomer);
 	}
 
@@ -384,7 +384,7 @@ public class CustomerServiceImpl implements CustomerService{
 	@PutMapping(value = "admin/staff")
 	public StaffAccount toggleStaff(@RequestBody StaffAccount sa) throws EntityNotFoundException{
 		StaffAccount staffAccount = staffRepository.getById(sa.getAccountNumber());
-		staffAccount.setStatus(sa.isStatus());
+		staffAccount.setStatus(!sa.isStatus());
 		return staffRepository.save(staffAccount);
 	}
 	
