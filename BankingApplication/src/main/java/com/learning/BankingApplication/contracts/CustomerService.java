@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityNotFoundException;
 
+import com.learning.BankingApplication.entity.Admin;
 import com.learning.BankingApplication.entity.BankAccount;
 import com.learning.BankingApplication.entity.Beneficiary;
 import com.learning.BankingApplication.entity.CustomerAccount;
@@ -12,6 +13,9 @@ import com.learning.BankingApplication.entity.Transaction;
 import com.learning.BankingApplication.exceptions.InsufficientBalanceException;
 
 public interface CustomerService {
+	
+	Admin createDefaultAdmin();
+	
 	/*Customer Handling*/
 	CustomerAccount registerCustomerAccount(CustomerAccount customerAccount);
 	CustomerAccount getCustomerAccountById(long customerId);

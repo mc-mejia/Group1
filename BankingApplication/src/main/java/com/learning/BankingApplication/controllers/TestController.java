@@ -22,18 +22,23 @@ public class TestController {
 		super();
 		this.customerService = customerService;
 	}
+	
+	public void createDefaultAdmin() {
+		customerService.createDefaultAdmin();
+	}
 
 
 	//Test service methods here!
 	public void run() {
+		customerService.createDefaultAdmin();
 
 //		List<BankAccount> listBanks = new ArrayList<>();
 //		Beneficiary testBnf = new Beneficiary();
 //		List<Beneficiary> listBnf = new ArrayList<>();
-		List<Transaction> listTrans = new ArrayList<>();
+//		List<Transaction> listTrans = new ArrayList<>();
 //		
 //		listBnf.add(testBnf);
-		Date testDate = Date.valueOf("1999-12-12");
+//		Date testDate = Date.valueOf("1999-12-12");
 //		CustomerAccount testCustomer = new CustomerAccount(
 //				12l, "customer", true, testDate, "escrooge1",
 //				"password",

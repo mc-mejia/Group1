@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.learning.BankingApplication.contracts.CustomerService;
+import com.learning.BankingApplication.entity.Admin;
 import com.learning.BankingApplication.entity.BankAccount;
 import com.learning.BankingApplication.entity.Beneficiary;
 import com.learning.BankingApplication.entity.CustomerAccount;
@@ -40,6 +41,7 @@ import com.learning.BankingApplication.entity.Role;
 import com.learning.BankingApplication.entity.StaffAccount;
 import com.learning.BankingApplication.entity.Transaction;
 import com.learning.BankingApplication.exceptions.InsufficientBalanceException;
+import com.learning.BankingApplication.repository.AdminRepository;
 import com.learning.BankingApplication.repository.BankAccountRepository;
 import com.learning.BankingApplication.repository.BeneficiaryRepository;
 import com.learning.BankingApplication.repository.CustomerRepository;
@@ -67,6 +69,33 @@ public class CustomerServiceImpl implements CustomerService{
 	JwtUtils jwtUtils;
 	PasswordEncoder encoder;
 	RoleRepository roleRepository;
+	AdminRepository adminRepository;
+	
+	//==========
+	//Create Admin
+	//==========
+	
+	public Admin createDefaultAdmin() {
+		if(adminRepository.count()>0)return null;
+		
+		Admin admin = new Admin();
+		admin.setUsername("admin");
+		admin.setPassword(encoder.encode("secret"));
+		
+		LocalDate localDate = LocalDateTime.now().toLocalDate();
+		admin.setDoc(java.sql.Date.valueOf( localDate));
+		admin.setStatus(true);
+		
+		Set<Role> roles = new HashSet<>();
+		
+		roles.add(roleRepository.findByName(ERole.ROLE_ADMIN).orElseThrow(()->new RuntimeException("Error: Role  Not Found")));
+		
+		admin.setRoles(roles);
+		
+		
+		
+		return adminRepository.save(admin);
+	}
 	
 	//==========
 	//Authentication/Security

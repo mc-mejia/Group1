@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import com.learning.BankingApplication.entity.LoginAccount;
+import com.learning.BankingApplication.repository.AdminRepository;
 import com.learning.BankingApplication.repository.CustomerRepository;
 import com.learning.BankingApplication.repository.StaffRepository;
 
@@ -24,6 +25,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	@Autowired
 	StaffRepository staffRepository;
 	
+	@Autowired
+	AdminRepository adminRepository;
+	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
@@ -33,9 +37,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			user = customerRepository.findByUsername(username).
 					orElseThrow(()->new UsernameNotFoundException("User Not Found with username" + username ));
 		}
-		catch(UsernameNotFoundException unfe) {
-			user = staffRepository.findByUsername(username).
-					orElseThrow(()->new UsernameNotFoundException("User Not Found with username" + username ));
+		catch(UsernameNotFoundException unfe1) {
+			try {
+				user = staffRepository.findByUsername(username).
+						orElseThrow(()->new UsernameNotFoundException("User Not Found with username" + username ));
+			}
+			catch(UsernameNotFoundException unfe2) {
+				user = adminRepository.findByUsername(username).
+						orElseThrow(()->new UsernameNotFoundException("User Not Found with username" + username ));
+			}
 		}
 		
 		List<GrantedAuthority> authorities = user.getRoles().stream()
